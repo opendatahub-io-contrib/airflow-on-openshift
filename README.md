@@ -1,18 +1,34 @@
 # Airflow on OpenShift
 
-Get started with Airflow on OpenShift
+Deploy Airflow on OpenShift
 
-## Tutorial Result
+## Table of Contents
 
-Airflow 2.2.4 on OpenShift 4.9 using Helm chart 1.5.1 with an example DAG deployed.
+* [Requirements](#requirements)
+* [General and Open Data Hub Information](#general-and-open-data-hub-information)
+* [Install](#install)
+* [Usage](#usage)
+  * [Tests (TODO)](#tests)
+* [References](#references)
 
-## Prerequisites
+## Requirements
 
 1. OpenShift cluster with admin permissions
-2. Install `oc` CLI tool
-3. Install [Helm](https://helm.sh/)
+2. OpenShift CLI, the `oc` command
+3. [Helm](https://helm.sh/)
 
-## Setup
+## General and Open Data Hub Information
+
+**Repository Description:**
+
+Instructions and tools for deploying and using the Airflow on Kubernetes using the Helm package manager on OpenShift alongside Open Data Hub.
+
+**Compatability:**
+
+* Tested with Airflow 2.2.4 onOpenShift 4.9 using Helm chart 1.5.1
+* No link with Open Data Hub, so will work with any version
+
+## Install
 
 1. Login to OpenShift cluster as cluster admin
 
@@ -97,6 +113,12 @@ Airflow 2.2.4 on OpenShift 4.9 using Helm chart 1.5.1 with an example DAG deploy
     ```bash
     oc get routes
     ```
+
+## Usage
+
+TODO
+
+### Tests
 
 ## References
 
