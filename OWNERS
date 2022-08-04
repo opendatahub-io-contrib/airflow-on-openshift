@@ -1,0 +1,10 @@
+# Each list is sorted alphabetically, additions should maintain that order
+approvers:
+- davwhite
+- dmarcus-wire
+- noahsa
+
+reviewers:
+- davwhite
+- dmarcus-wire
+- noahsa
