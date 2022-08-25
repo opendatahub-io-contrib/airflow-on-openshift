@@ -24,7 +24,7 @@ Tested with:
 
 ## Install
 
-### Install Airflow via Helm
+### Install Airflow via `--set`
 
 ```
 # add helm repo
