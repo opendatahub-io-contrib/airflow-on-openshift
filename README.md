@@ -44,6 +44,8 @@ helm upgrade \
     --set gid=$CHART_GID \
     --set statsd.securityContext.runAsUser=$CHART_UID \
     --set redis.securityContext.runAsUser=$CHART_UID \
+    --set postgresql.securityContext.enabled=false \
+    --set postgresql.containerSecurityContext.enabled=false \
     --set dags.gitSync.repo=https://github.com/redhat-na-ssa/airflow-on-openshift.git \
     --set dags.gitSync.branch=main \
     --set dags.gitSync.subPath=example_dag
