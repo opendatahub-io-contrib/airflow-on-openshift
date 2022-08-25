@@ -6,8 +6,7 @@ Deploy Airflow on OpenShift via Helm
 
 * [Requirements](#requirements)
 * [Install](#install)
-* [Usage](#usage)
-* [Tests](#tests)
+* [Development](#development)
 * [References](#references)
 
 ## Requirements
@@ -19,27 +18,27 @@ Deploy Airflow on OpenShift via Helm
 ### Compatability
 
 Tested with:
-* Airflow 2.2.4
-* OpenShift 4.9.x
-* Helm chart 1.5.1
+* Airflow 2.3.0
+* OpenShift 4.10.x
+* Helm chart 1.6.0
 
 ## Install
 
-Use `helm` to download charts
-
 ```
+# add helm repo
 helm repo add apache-airflow https://airflow.apache.org
-```
-TODO: Pin version of Helm chart
 
-```
-CHART_UID=$(oc get project airflow -o jsonpath="{['metadata.annotations.openshift\.io/sa\.scc\.uid-range']}" | sed "s@/.*@@")
-CHART_GID=$(oc get project airflow -o jsonpath="{['metadata.annotations.openshift\.io/sa\.scc\.supplemental-groups']}" | sed "s@/.*@@")
+# get project
+PROJECT=$(oc project -q)
 
+# get openshift uid/gid range
+CHART_UID=$(oc get project ${PROJECT} -o jsonpath="{['metadata.annotations.openshift\.io/sa\.scc\.uid-range']}" | sed "s@/.*@@")
+CHART_GID=$(oc get project ${PROJECT} -o jsonpath="{['metadata.annotations.openshift\.io/sa\.scc\.supplemental-groups']}" | sed "s@/.*@@")
+
+# install via helm
 helm upgrade \
     --install airflow apache-airflow/airflow \
     --namespace airflow \
-    --values ./values.yaml \
     --set uid=$CHART_UID \
     --set gid=$CHART_GID \
     --set statsd.securityContext.runAsUser=$CHART_UID \
@@ -49,40 +48,27 @@ helm upgrade \
     --set dags.gitSync.repo=https://github.com/redhat-na-ssa/airflow-on-openshift.git \
     --set dags.gitSync.branch=main \
     --set dags.gitSync.subPath=example_dag
-```
 
-Create route for Airflow web UI
-
-```
+# create route for airflow
 oc create route edge \
     --service=airflow-webserver \
     --insecure-policy=Redirect \
     --port=8080
-```
 
-Create route for the Airflow Flower web UI
-
-```
+# create route for airflow flower
 oc create route edge \
     --service=airflow-flower \
     --insecure-policy=Redirect \
     --port=5555
-```
 
-Confirm routes
-
-```
+# confirm routes
 oc get routes
 ```
 
-## Usage
-
-TODO
-
-### Tests
+## Development
 
 TODO
 
 ## References
 
-Steps originate from https://dsri.maastrichtuniversity.nl/docs/workflows-airflow/
+TODO
