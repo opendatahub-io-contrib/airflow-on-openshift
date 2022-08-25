@@ -1,0 +1,16 @@
+scheduler:
+  securityContext:
+    runAsUser: 1000690000
+
+postgresql:
+  volumePermissions:
+    securityContext:
+      runAsUser: 1000690000
+
+  securityContext:
+    enabled: true
+    fsGroup: 1000690000
+
+  containerSecurityContext:
+    enabled: true
+    runAsUser: 1000690000
