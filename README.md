@@ -18,37 +18,25 @@ Deploy Airflow on OpenShift via Helm
 
 ### Compatability
 
-Tested with Airflow 2.2.4 on OpenShift 4.9.x using Helm chart 1.5.1
+Tested with:
+* Airflow 2.2.4
+* OpenShift 4.9.x
+* Helm chart 1.5.1
 
 ## Install
 
-Add Airflow Helm repo
+Use `helm` to download charts
 
 ```
 helm repo add apache-airflow https://airflow.apache.org
-```
 
-Pull Airflow Helm chart
-
-```
 helm pull apache-airflow/airflow
-```
 
+tar xzf airflow-*.tgz
+```
 TODO: Pin version of Helm chart
 
-Update to your version and unpack the tar file
-
-```
-tar xzf airflow-<version>.tgz
-```
-
-Copy the `airflow-values.yaml` file over the `airflow/values.yaml` file
-
-```
-cp airflow-values.yaml airflow/values.yaml
-```
-
-Copy the `charts-postgresql-values.yaml` file over the `airflow/charts/postgresql/values.yaml` file
+Patch postgresql helm chart values
 
 ```
 cp charts-postgresql-values.yaml airflow/charts/postgresql/values.yaml
@@ -61,7 +49,7 @@ Change repo and subPath for your deployment.
 ```
 cd airflow
 helm upgrade \
-    --install airflow ./ \ 
+    --install airflow ./ \
     --namespace airflow \
     --values ./values.yaml \
     --set dags.gitSync.repo=https://github.com/redhat-na-ssa/airflow-on-openshift.git \
