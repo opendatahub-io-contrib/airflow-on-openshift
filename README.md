@@ -24,6 +24,12 @@ Tested with:
 
 ## Install
 
+### Quickstart
+
+```
+hacks/easy_install.sh
+```
+
 ### Install Airflow via `--set`
 
 ```
