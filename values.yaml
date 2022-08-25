@@ -1,40 +1,5 @@
-scheduler:
-  securityContext:
-    runAsUser: 1000690000
-
-triggerer:
-  securityContext:
-    runAsUser: 1000690000
-
-workers:
-  securityContext:
-    runAsUser: 1000690000
-
-webserver:
-  securityContext:
-    runAsUser: 1000690000
-
-statsd:
-  securityContext:
-    runAsUser: 1000690000
-
-redis:
-  securityContext:
-    runAsUser: 1000690000
-
-migrateDatabaseJob:
-  securityContext:
-    runAsUser: 1000690000
-    
 postgresql:
-  volumePermissions:
-    securityContext:
-      runAsUser: 1000690000
-
   securityContext:
     enabled: false
-    # fsGroup: 1000690000
-
   containerSecurityContext:
     enabled: false
-    # runAsUser: 1000690000
