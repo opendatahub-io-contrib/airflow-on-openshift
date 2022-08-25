@@ -29,27 +29,12 @@ Use `helm` to download charts
 
 ```
 helm repo add apache-airflow https://airflow.apache.org
-
-helm pull apache-airflow/airflow
-
-tar xzf airflow-*.tgz
 ```
 TODO: Pin version of Helm chart
 
-Patch postgresql helm chart values
-
 ```
-cp charts-postgresql-values.yaml airflow/charts/postgresql/values.yaml
-```
-
-Change directory to the airflow folder. Install the Airflow Helm chart. Also, config values are set so the DAGs are pulled from this Git repo. 
-
-Change repo and subPath for your deployment.
-
-```
-cd airflow
 helm upgrade \
-    --install airflow ./ \
+    --install airflow apache-airflow/airflow \
     --namespace airflow \
     --values ./values.yaml \
     --set dags.gitSync.repo=https://github.com/redhat-na-ssa/airflow-on-openshift.git \
