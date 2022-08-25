@@ -1,125 +1,98 @@
 # Airflow on OpenShift
 
-Deploy Airflow on OpenShift
+Deploy Airflow on OpenShift via Helm
 
 ## Table of Contents
 
 * [Requirements](#requirements)
-* [General and Open Data Hub Information](#general-and-open-data-hub-information)
 * [Install](#install)
-* [Usage](#usage)
-  * [Tests (TODO)](#tests)
+* [Development](#development)
 * [References](#references)
 
 ## Requirements
 
-1. OpenShift cluster with admin permissions
-2. OpenShift CLI, the `oc` command
-3. [Helm](https://helm.sh/)
+* OpenShift cluster with a project / namespace
+* [oc](https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable) - OpenShift CLI
+* [helm](https://helm.sh/docs/intro/install)
 
-## General and Open Data Hub Information
+### Compatability
 
-**Repository Description:**
-
-Instructions and tools for deploying and using the Airflow on Kubernetes using the Helm package manager on OpenShift alongside Open Data Hub.
-
-**Compatability:**
-
-* Tested with Airflow 2.2.4 onOpenShift 4.9 using Helm chart 1.5.1
-* No link with Open Data Hub, so will work with any version
+Tested with:
+* Airflow 2.3.0
+* OpenShift 4.10.x
+* Helm chart 1.6.0
 
 ## Install
 
-1. Login to OpenShift cluster as cluster admin
+### Install Airflow via `--set`
 
-    ```bash
-    oc login <token>
-    ```
+```
+# add helm repo
+helm repo add apache-airflow https://airflow.apache.org
 
-2. Create a project using the `create-project.yml` file (Required)
+# get project
+PROJECT=$(oc project -q)
 
-    ```bash
-    oc create -f create-project.yaml
-    ```
+# get openshift uid/gid range
+CHART_UID=$(oc get project ${PROJECT} -o jsonpath="{['metadata.annotations.openshift\.io/sa\.scc\.uid-range']}" | sed "s@/.*@@")
+CHART_GID=$(oc get project ${PROJECT} -o jsonpath="{['metadata.annotations.openshift\.io/sa\.scc\.supplemental-groups']}" | sed "s@/.*@@")
 
-3. Change to `airflow` project
+echo "UID/GID: $CHART_UID/$CHART_GID"
 
-    ```bash
-    oc project airflow
-    ```
-
-4. Add Airflow Helm repo
-
-    ```bash
-    helm repo add apache-airflow https://airflow.apache.org
-    ```
-
-5. Pull Airflow Helm chart
-
-    ```bash
-    helm pull apache-airflow/airflow
-    ```
-
-    TODO pin version of Helm chart
-
-6. Update to your version and unpack the tar file
-
-    ```bash
-    tar xzf airflow-<version>.tgz
-    ```
-
-7. Copy the `airflow-values.yaml` file over the `airflow/values.yaml` file
-
-    ```bash
-    cp airflow-values.yaml airflow/values.yaml
-    ```
-
-8. Copy the `charts-postgresql-values.yaml` file over the `airflow/charts/postgresql/values.yaml` file
-
-    ```bash
-    cp charts-postgresql-values.yaml airflow/charts/postgresql/values.yaml
-    ```
-
-9. Change directory to the airflow folder. Install the Airflow Helm chart. Also, config values are set so the DAGs are pulled from this Git repo. Change repo and subPath for your deployment.
-
-    ```bash
-    cd airflow && helm upgrade --install airflow ./ --namespace airflow \
-    --values ./values.yaml \
+# install via helm
+helm upgrade \
+    --install airflow apache-airflow/airflow \
+    --namespace airflow \
+    --set uid=$CHART_UID \
+    --set gid=$CHART_GID \
+    --set statsd.securityContext.runAsUser=$CHART_UID \
+    --set redis.securityContext.runAsUser=$CHART_UID \
+    --set postgresql.securityContext.enabled=false \
+    --set postgresql.containerSecurityContext.enabled=false \
     --set dags.gitSync.repo=https://github.com/redhat-na-ssa/airflow-on-openshift.git \
     --set dags.gitSync.branch=main \
     --set dags.gitSync.subPath=example_dag
-    ```
+```
 
-10. Create route for Airflow web UI
+### Install via `values.yaml` (alternative)
 
-    ```bash
-    oc create route edge \
+Note: You do not need to do this if you used the method above.
+
+```
+# copy and edit values.yaml
+cp example_values.yaml values.yaml
+# vim values.yaml
+
+# install via helm
+helm upgrade \
+    --install airflow apache-airflow/airflow \
+    --namespace airflow \
+    --values ./values.yaml
+```
+
+### Create Routes
+
+```
+# create route for airflow
+oc create route edge \
     --service=airflow-webserver \
     --insecure-policy=Redirect \
     --port=8080
-    ```
 
-11. Create route for the Airflow Flower web UI
-
-    ```bash
-    oc create route edge \
+# create route for airflow flower
+oc create route edge \
     --service=airflow-flower \
     --insecure-policy=Redirect \
     --port=5555
-    ```
 
-12. Confirm routes
+# confirm routes
+oc get routes
+```
 
-    ```bash
-    oc get routes
-    ```
-
-## Usage
+## Development
 
 TODO
 
-### Tests
-
 ## References
 
-Steps originate from https://dsri.maastrichtuniversity.nl/docs/workflows-airflow/
+TODO
