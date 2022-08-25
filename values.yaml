@@ -2,6 +2,10 @@ scheduler:
   securityContext:
     runAsUser: 1000690000
 
+trigger:
+  securityContext:
+    runAsUser: 1000690000
+
 postgresql:
   volumePermissions:
     securityContext:
