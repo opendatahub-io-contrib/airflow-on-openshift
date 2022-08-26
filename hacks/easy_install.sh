@@ -1,5 +1,7 @@
 #/bin/sh
 
+APP_NAME=${APP_NAME:-airflow}
+
 check_bins(){
 
     echo "Checking for bins"
@@ -35,7 +37,7 @@ helm_install(){
 
     # install via helm
     helm upgrade \
-        --install airflow apache-airflow/airflow \
+        --install ${APP_NAME} apache-airflow/airflow \
         --namespace airflow \
         --set uid=$CHART_UID \
         --set gid=$CHART_GID \
@@ -48,6 +50,24 @@ helm_install(){
         --set dags.gitSync.subPath=example_dag
 }
 
+setup_routes(){
+# create route for airflow
+    oc create route edge \
+        --service=${APP_NAME}-webserver \
+        --insecure-policy=Redirect \
+        --port=8080
+
+    # create route for airflow flower
+    oc create route edge \
+        --service=${APP_NAME}-flower \
+        --insecure-policy=Redirect \
+        --port=5555
+
+    # confirm routes
+    oc get routes
+}
+
 check_bins
 init_oc
 helm_install
+setup_routes
