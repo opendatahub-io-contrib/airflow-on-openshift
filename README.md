@@ -102,3 +102,4 @@ TODO
 ## References
 
 - [Airflow - Helm charts](https://github.com/airflow-helm/charts)
+- [Airflow - Helm example values](https://github.com/airflow-helm/charts/blob/main/charts/airflow/sample-values-KubernetesExecutor.yaml)
