@@ -55,9 +55,9 @@ helm upgrade \
     --set redis.securityContext.runAsUser=$CHART_UID \
     --set postgresql.securityContext.enabled=false \
     --set postgresql.containerSecurityContext.enabled=false \
-    --set dags.gitSync.repo=https://github.com/redhat-na-ssa/airflow-on-openshift.git \
+    --set dags.gitSync.repo=https://github.com/opendatahub-io-contrib/airflow-on-openshift.git \
     --set dags.gitSync.branch=main \
-    --set dags.gitSync.subPath=example_dag
+    --set dags.gitSync.subPath=dags
 ```
 
 ### Install via `values.yaml` (alternative)
