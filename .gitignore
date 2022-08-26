@@ -1,0 +1,5 @@
+airflow/*
+airflow-*
+
+scratch/
+values.yaml
