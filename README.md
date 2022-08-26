@@ -97,7 +97,11 @@ oc get routes
 
 ## Development
 
-TODO
+TODO:
+- Improve Example Values
+  - Create 3 example `values.yaml` for common use cases
+    - Use K8S executor
+    - TBD
 
 ## References
 
