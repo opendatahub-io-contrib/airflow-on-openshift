@@ -18,6 +18,7 @@ Deploy Airflow on OpenShift via Helm
 ### Compatability
 
 Tested with:
+
 * Airflow 2.3.0
 * OpenShift 4.10.x
 * Helm chart 1.6.0
@@ -98,12 +99,13 @@ oc get routes
 ## Development
 
 TODO:
-- Improve Example Values
-  - Create 3 example `values.yaml` for common use cases
-    - Use K8S executor
-    - TBD
+* Improve Example Values
+  * Create 3 example `values.yaml` for common use cases
+    * Use K8S executor
+    * TBD
 
 ## References
 
-- [Airflow - Helm charts](https://github.com/airflow-helm/charts)
-- [Airflow - Helm example values](https://github.com/airflow-helm/charts/blob/main/charts/airflow/sample-values-KubernetesExecutor.yaml)
+* [Airflow - Helm charts](https://airflow.apache.org/docs/helm-chart/stable/parameters-ref.html)
+* [Airflow - Community Helm charts](https://github.com/airflow-helm/charts)
+* [Airflow - Helm example values](https://github.com/airflow-helm/charts/blob/main/charts/airflow/sample-values-KubernetesExecutor.yaml)
