@@ -35,6 +35,9 @@ logs:
   persistence:
     enabled: false
 
+flower:
+  enabled: false
+
 # ingress:
 #   web:
 #     enabled: true
