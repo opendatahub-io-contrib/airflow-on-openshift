@@ -4,7 +4,7 @@ defaultAirflowTag: "2.7.0"
 
 executor: KubernetesExecutor
 fernetKey: "7T512UXSSmBOkpWimFHIVb8jK6lfmSAvx4mO6Arehnc="
-webserverSecretKey: "AvoidingDialogs"
+webserverSecretKey: "ShouldNotBeInProduction"
 
 scheduler:
   replicas: 2
@@ -22,6 +22,8 @@ redis:
   uid: null
 
 dags:
+  persistence:
+    enabled: false
   gitSync:
     uid: null
     enabled: true
@@ -29,13 +31,17 @@ dags:
     # branch: main
     # subPath: example_dag
 
+logs:
+  persistence:
+    enabled: false
+
+# ingress:
+#   web:
+#     enabled: true
+
 postgresql:
   primary:
     podSecurityContext:
       enabled: false
     containerSecurityContext:
       enabled: false
-
-# ingress:
-#   web:
-#     enabled: true
