@@ -19,9 +19,9 @@ Deploy Airflow on OpenShift via Helm
 
 Tested with:
 
-* Airflow 2.3.0
-* OpenShift 4.10.x
-* Helm chart 1.6.0
+* Airflow 2.6.2
+* OpenShift 4.11+
+* Helm chart 1.10.0
 
 ## Install
 
