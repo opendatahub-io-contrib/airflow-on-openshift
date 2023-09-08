@@ -6,7 +6,6 @@ Deploy Airflow on OpenShift via Helm
 
 * [Requirements](#requirements)
 * [Install](#install)
-* [Development](#development)
 * [References](#references)
 
 ## Requirements
@@ -15,7 +14,7 @@ Deploy Airflow on OpenShift via Helm
 * [oc](https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable) - OpenShift CLI
 * [helm](https://helm.sh/docs/intro/install)
 
-### Compatability
+### Compatibility
 
 Tested with:
 
