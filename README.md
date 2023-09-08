@@ -28,10 +28,10 @@ Tested with:
 ### Quickstart
 
 ```
-hacks/easy_install.sh
+scripts/easy_install.sh
 ```
 
-### Install Airflow via `--set`
+### Install Airflow via `helm`
 
 ```
 # add helm repo
@@ -46,50 +46,20 @@ CHART_GID=$(oc get project ${PROJECT} -o jsonpath="{['metadata.annotations.opens
 
 echo "UID/GID: ${CHART_UID}/${CHART_GID}"
 
-# install via helm
-helm upgrade \
-    --install airflow apache-airflow/airflow \
-    --namespace ${PROJECT} \
-    --set uid=${CHART_UID} \
-    --set gid=${CHART_GID} \
-    --set redis.securityContext.runAsUser=${CHART_UID} \
-    --set postgresql.primary.podSecurityContext.enabled=false \
-    --set postgresql.primary.containerSecurityContext.enabled=false \
-    --set airflow.dags.gitSync.enabled=true \
-    --set airflow.dags.gitSync.repo=https://github.com/opendatahub-io-contrib/airflow-on-openshift.git \
-    --set airflow.dags.gitSync.branch=main \
-    --set airflow.dags.gitSync.subPath=dags
-```
-
-### Install via `values.yaml` (alternative)
-
-Note: You do not need to do this if you used the method above.
-
-```
 # copy and edit values.yaml
 cp example_values.yaml values.yaml
-# vim values.yaml
+
+# edit values.yaml
 
 # install via helm
 helm upgrade \
     --install airflow apache-airflow/airflow \
     --namespace ${PROJECT} \
+    --version 1.10.0 \
     --set uid=${CHART_UID} \
     --set gid=${CHART_GID} \
     --set redis.securityContext.runAsUser=${CHART_UID} \
     --values ./values.yaml
-
-# kludges
-
-# triggerer
-oc patch statefulset/airflow-triggerer --patch '{"spec":{"template":{"spec":{"initContainers":[{"name":"git-sync-init","securityContext":null}]}}}}'
-
-oc patch statefulset/airflow-triggerer --patch '{"spec":{"template":{"spec":{"containers":[{"name":"git-sync","securityContext":null}]}}}}'
-
-# worker
-oc patch statefulset/airflow-worker --patch '{"spec":{"template":{"spec":{"initContainers":[{"name":"git-sync-init","securityContext":null}]}}}}'
-
-oc patch statefulset/airflow-worker --patch '{"spec":{"template":{"spec":{"containers":[{"name":"git-sync","securityContext":null}]}}}}'
 ```
 
 ### Create Routes
@@ -111,16 +81,9 @@ oc create route edge \
 oc get routes
 ```
 
-## Development
-
-TODO:
-* Improve Example Values
-  * Create 3 example `values.yaml` for common use cases
-    * Use K8S executor
-    * TBD
-
 ## References
 
 * [Airflow - Helm charts](https://airflow.apache.org/docs/helm-chart/stable/parameters-ref.html)
 * [Airflow - Community Helm charts](https://github.com/airflow-helm/charts)
 * [Airflow - Helm example values](https://github.com/airflow-helm/charts/blob/main/charts/airflow/sample-values-KubernetesExecutor.yaml)
+* [Airflow - DAG Examples](https://github.com/apache/airflow.git)

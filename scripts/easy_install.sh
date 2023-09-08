@@ -39,15 +39,11 @@ helm_install(){
     helm upgrade \
         --install ${APP_NAME} apache-airflow/airflow \
         --namespace ${PROJECT} \
-        --set uid=$CHART_UID \
-        --set gid=$CHART_GID \
-        --set statsd.securityContext.runAsUser=$CHART_UID \
-        --set redis.securityContext.runAsUser=$CHART_UID \
-        --set postgresql.securityContext.enabled=false \
-        --set postgresql.containerSecurityContext.enabled=false \
-        --set dags.gitSync.repo=https://github.com/opendatahub-io-contrib/airflow-on-openshift.git \
-        --set dags.gitSync.branch=main \
-        --set dags.gitSync.subPath=dags
+        --version 1.10.0 \
+        --set uid=${CHART_UID} \
+        --set gid=${CHART_GID} \
+        --set redis.securityContext.runAsUser=${CHART_UID} \
+        --values ./example_values.yaml
 }
 
 setup_routes(){

@@ -7,25 +7,31 @@
 # uid: $CHART_UID
 # gid: $CHART_GID
 
-# statsd:
-#   securityContext:
-#     runAsUser: $CHART_UID
+scheduler:
+  replicas: 2
+
+webserver:
+  replicas: 2
+
+statsd:
+  uid: null
 
 # redis:
 #   securityContext:
 #     runAsUser: $CHART_UID
 
-airflow:
-  executor: KubernetesExecutor
-  fernetKey: "7T512UXSSmBOkpWimFHIVb8jK6lfmSAvx4mO6Arehnc="
+executor: KubernetesExecutor
+fernetKey: "7T512UXSSmBOkpWimFHIVb8jK6lfmSAvx4mO6Arehnc="
+webserverSecretKey: "AvoidingDialogs"
 
 
 dags:
   gitSync:
     enabled: true
-    repo: https://github.com/redhat-na-ssa/airflow-on-openshift.git
-    branch: main
-    subPath: example_dag
+    # repo: https://github.com/redhat-na-ssa/airflow-on-openshift.git
+    # branch: main
+    # subPath: example_dag
+    uid: null
 
 postgresql:
   primary:
@@ -33,9 +39,6 @@ postgresql:
       enabled: false
     containerSecurityContext:
       enabled: false
-
-workers:
-  enabled: false
 
 # ingress:
 #   web:
