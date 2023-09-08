@@ -44,21 +44,21 @@ PROJECT=$(oc project -q)
 CHART_UID=$(oc get project ${PROJECT} -o jsonpath="{['metadata.annotations.openshift\.io/sa\.scc\.uid-range']}" | sed "s@/.*@@")
 CHART_GID=$(oc get project ${PROJECT} -o jsonpath="{['metadata.annotations.openshift\.io/sa\.scc\.supplemental-groups']}" | sed "s@/.*@@")
 
-echo "UID/GID: $CHART_UID/$CHART_GID"
+echo "UID/GID: ${CHART_UID}/${CHART_GID}"
 
 # install via helm
 helm upgrade \
     --install airflow apache-airflow/airflow \
-    --namespace airflow \
-    --set uid=$CHART_UID \
-    --set gid=$CHART_GID \
-    --set statsd.securityContext.runAsUser=$CHART_UID \
-    --set redis.securityContext.runAsUser=$CHART_UID \
-    --set postgresql.securityContext.enabled=false \
-    --set postgresql.containerSecurityContext.enabled=false \
-    --set dags.gitSync.repo=https://github.com/opendatahub-io-contrib/airflow-on-openshift.git \
-    --set dags.gitSync.branch=main \
-    --set dags.gitSync.subPath=dags
+    --namespace ${PROJECT} \
+    --set uid=${CHART_UID} \
+    --set gid=${CHART_GID} \
+    --set redis.securityContext.runAsUser=${CHART_UID} \
+    --set postgresql.primary.podSecurityContext.enabled=false \
+    --set postgresql.primary.containerSecurityContext.enabled=false \
+    --set airflow.dags.gitSync.enabled=true \
+    --set airflow.dags.gitSync.repo=https://github.com/opendatahub-io-contrib/airflow-on-openshift.git \
+    --set airflow.dags.gitSync.branch=main \
+    --set airflow.dags.gitSync.subPath=dags
 ```
 
 ### Install via `values.yaml` (alternative)
@@ -73,8 +73,23 @@ cp example_values.yaml values.yaml
 # install via helm
 helm upgrade \
     --install airflow apache-airflow/airflow \
-    --namespace airflow \
+    --namespace ${PROJECT} \
+    --set uid=${CHART_UID} \
+    --set gid=${CHART_GID} \
+    --set redis.securityContext.runAsUser=${CHART_UID} \
     --values ./values.yaml
+
+# kludges
+
+# triggerer
+oc patch statefulset/airflow-triggerer --patch '{"spec":{"template":{"spec":{"initContainers":[{"name":"git-sync-init","securityContext":null}]}}}}'
+
+oc patch statefulset/airflow-triggerer --patch '{"spec":{"template":{"spec":{"containers":[{"name":"git-sync","securityContext":null}]}}}}'
+
+# worker
+oc patch statefulset/airflow-worker --patch '{"spec":{"template":{"spec":{"initContainers":[{"name":"git-sync-init","securityContext":null}]}}}}'
+
+oc patch statefulset/airflow-worker --patch '{"spec":{"template":{"spec":{"containers":[{"name":"git-sync","securityContext":null}]}}}}'
 ```
 
 ### Create Routes

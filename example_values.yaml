@@ -4,25 +4,39 @@
 # CHART_UID=$(oc get project ${PROJECT} -o jsonpath="{['metadata.annotations.openshift\.io/sa\.scc\.uid-range']}" | sed "s@/.*@@")
 # CHART_GID=$(oc get project ${PROJECT} -o jsonpath="{['metadata.annotations.openshift\.io/sa\.scc\.supplemental-groups']}" | sed "s@/.*@@")
 
-uid: $CHART_UID
-gid: $CHART_GID
+# uid: $CHART_UID
+# gid: $CHART_GID
 
-statsd:
-  securityContext:
-    runAsUser: $CHART_UID
+# statsd:
+#   securityContext:
+#     runAsUser: $CHART_UID
 
-redis:
-  securityContext:
-    runAsUser: $CHART_UID
+# redis:
+#   securityContext:
+#     runAsUser: $CHART_UID
+
+airflow:
+  executor: KubernetesExecutor
+  fernetKey: "7T512UXSSmBOkpWimFHIVb8jK6lfmSAvx4mO6Arehnc="
+
 
 dags:
   gitSync:
+    enabled: true
     repo: https://github.com/redhat-na-ssa/airflow-on-openshift.git
     branch: main
     subPath: example_dag
 
 postgresql:
-  securityContext:
-    enabled: false
-  containerSecurityContext:
-    enabled: false
+  primary:
+    podSecurityContext:
+      enabled: false
+    containerSecurityContext:
+      enabled: false
+
+workers:
+  enabled: false
+
+# ingress:
+#   web:
+#     enabled: true
