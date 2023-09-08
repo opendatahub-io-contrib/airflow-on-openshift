@@ -1,28 +1,50 @@
-# $CHART_UID & $CHART_GID need to be replaced with actual values
-# PROJECT=$(oc project -q)
-#
-# CHART_UID=$(oc get project ${PROJECT} -o jsonpath="{['metadata.annotations.openshift\.io/sa\.scc\.uid-range']}" | sed "s@/.*@@")
-# CHART_GID=$(oc get project ${PROJECT} -o jsonpath="{['metadata.annotations.openshift\.io/sa\.scc\.supplemental-groups']}" | sed "s@/.*@@")
 
-uid: $CHART_UID
-gid: $CHART_GID
+defaultAirflowRepository: apache/airflow
+defaultAirflowTag: "2.7.0"
+
+executor: KubernetesExecutor
+fernetKey: "7T512UXSSmBOkpWimFHIVb8jK6lfmSAvx4mO6Arehnc="
+webserverSecretKey: "ShouldNotBeInProduction"
+
+scheduler:
+  replicas: 2
+
+webserver:
+  replicas: 2
 
 statsd:
-  securityContext:
-    runAsUser: $CHART_UID
+  uid: null
+
+pgbouncer:
+  uid: null
 
 redis:
-  securityContext:
-    runAsUser: $CHART_UID
+  uid: null
 
 dags:
+  persistence:
+    enabled: false
   gitSync:
-    repo: https://github.com/redhat-na-ssa/airflow-on-openshift.git
-    branch: main
-    subPath: example_dag
+    uid: null
+    enabled: true
+    # repo: https://github.com/redhat-na-ssa/airflow-on-openshift.git
+    # branch: main
+    # subPath: example_dag
+
+logs:
+  persistence:
+    enabled: false
+
+flower:
+  enabled: false
+
+# ingress:
+#   web:
+#     enabled: true
 
 postgresql:
-  securityContext:
-    enabled: false
-  containerSecurityContext:
-    enabled: false
+  primary:
+    podSecurityContext:
+      enabled: false
+    containerSecurityContext:
+      enabled: false

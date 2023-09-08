@@ -6,7 +6,6 @@ Deploy Airflow on OpenShift via Helm
 
 * [Requirements](#requirements)
 * [Install](#install)
-* [Development](#development)
 * [References](#references)
 
 ## Requirements
@@ -15,23 +14,23 @@ Deploy Airflow on OpenShift via Helm
 * [oc](https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable) - OpenShift CLI
 * [helm](https://helm.sh/docs/intro/install)
 
-### Compatability
+### Compatibility
 
 Tested with:
 
-* Airflow 2.3.0
-* OpenShift 4.10.x
-* Helm chart 1.6.0
+* Airflow 2.6.2 - 2.7.0
+* OpenShift 4.11+
+* Helm chart 1.10.0
 
 ## Install
 
 ### Quickstart
 
 ```
-hacks/easy_install.sh
+scripts/easy_install.sh
 ```
 
-### Install Airflow via `--set`
+### Install Airflow via `helm`
 
 ```
 # add helm repo
@@ -44,36 +43,21 @@ PROJECT=$(oc project -q)
 CHART_UID=$(oc get project ${PROJECT} -o jsonpath="{['metadata.annotations.openshift\.io/sa\.scc\.uid-range']}" | sed "s@/.*@@")
 CHART_GID=$(oc get project ${PROJECT} -o jsonpath="{['metadata.annotations.openshift\.io/sa\.scc\.supplemental-groups']}" | sed "s@/.*@@")
 
-echo "UID/GID: $CHART_UID/$CHART_GID"
+echo "UID/GID: ${CHART_UID}/${CHART_GID}"
 
-# install via helm
-helm upgrade \
-    --install airflow apache-airflow/airflow \
-    --namespace airflow \
-    --set uid=$CHART_UID \
-    --set gid=$CHART_GID \
-    --set statsd.securityContext.runAsUser=$CHART_UID \
-    --set redis.securityContext.runAsUser=$CHART_UID \
-    --set postgresql.securityContext.enabled=false \
-    --set postgresql.containerSecurityContext.enabled=false \
-    --set dags.gitSync.repo=https://github.com/opendatahub-io-contrib/airflow-on-openshift.git \
-    --set dags.gitSync.branch=main \
-    --set dags.gitSync.subPath=dags
-```
-
-### Install via `values.yaml` (alternative)
-
-Note: You do not need to do this if you used the method above.
-
-```
 # copy and edit values.yaml
 cp example_values.yaml values.yaml
-# vim values.yaml
+
+# edit values.yaml
 
 # install via helm
 helm upgrade \
     --install airflow apache-airflow/airflow \
-    --namespace airflow \
+    --namespace ${PROJECT} \
+    --version 1.10.0 \
+    --set uid=${CHART_UID} \
+    --set gid=${CHART_GID} \
+    --set redis.securityContext.runAsUser=${CHART_UID} \
     --values ./values.yaml
 ```
 
@@ -96,16 +80,9 @@ oc create route edge \
 oc get routes
 ```
 
-## Development
-
-TODO:
-* Improve Example Values
-  * Create 3 example `values.yaml` for common use cases
-    * Use K8S executor
-    * TBD
-
 ## References
 
 * [Airflow - Helm charts](https://airflow.apache.org/docs/helm-chart/stable/parameters-ref.html)
 * [Airflow - Community Helm charts](https://github.com/airflow-helm/charts)
 * [Airflow - Helm example values](https://github.com/airflow-helm/charts/blob/main/charts/airflow/sample-values-KubernetesExecutor.yaml)
+* [Airflow - DAG Examples](https://github.com/apache/airflow.git)
