@@ -3,3 +3,5 @@ airflow-*
 
 scratch/
 values.yaml
+
+.DS_Store
