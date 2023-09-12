@@ -16,6 +16,7 @@ default_args = {
 dag = DAG(
     'kubernetes_pod_operator',
     default_args=default_args,
+    start_date=datetime(2023,8,31),
     schedule_interval=None
     # schedule_interval=timedelta(minutes=10)
 )
