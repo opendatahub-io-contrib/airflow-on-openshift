@@ -4,7 +4,7 @@ from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOpera
 from airflow.operators.dummy_operator import DummyOperator
 
 default_args = {
-    'owner': 'airflow',
+    'owner': 'airflow'
     # 'depends_on_past': False,
     # 'start_date': datetime.utcnow(),
     # 'email': ['airflow@example.com'],
