@@ -11,6 +11,8 @@ scheduler:
 
 webserver:
   replicas: 2
+  livenessProbe:
+    initialDelaySeconds: 30
 
 statsd:
   uid: null
@@ -27,9 +29,9 @@ dags:
   gitSync:
     uid: null
     enabled: true
-    # repo: https://github.com/redhat-na-ssa/airflow-on-openshift.git
+    # repo: https://github.com/opendatahub-io-contrib/airflow-on-openshift.git
     # branch: main
-    # subPath: example_dag
+    # subPath: dags
 
 logs:
   persistence:
