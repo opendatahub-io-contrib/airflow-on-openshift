@@ -11,8 +11,10 @@ scheduler:
 
 webserver:
   replicas: 2
+  readinessProbe:
+    initialDelaySeconds: 45
   livenessProbe:
-    initialDelaySeconds: 30
+    initialDelaySeconds: 60
 
 statsd:
   uid: null
