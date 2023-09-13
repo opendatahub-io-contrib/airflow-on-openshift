@@ -4,19 +4,18 @@ from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOpera
 from airflow.operators.dummy_operator import DummyOperator
 
 default_args = {
-    'owner': 'airflow'
-    # 'depends_on_past': False,
-    # 'start_date': datetime.utcnow(),
-    # 'email': ['airflow@example.com'],
-    # 'email_on_failure': False,
-    # 'email_on_retry': False,
-    # 'retries': 1,
-    # 'retry_delay': timedelta(minutes=5)
+    'owner': 'airflow',
+    'depends_on_past': False,
+    'start_date': datetime.utcnow(),
+    'email': ['airflow@example.com'],
+    'email_on_failure': False,
+    'email_on_retry': False,
+    'retries': 1,
+    'retry_delay': timedelta(minutes=5)
 }
 dag = DAG(
     'kubernetes_pod_operator',
     default_args=default_args,
-    start_date=datetime(2023,8,31),
     schedule_interval=None
     # schedule_interval=timedelta(minutes=10)
 )
@@ -24,8 +23,8 @@ dag = DAG(
 start = DummyOperator(task_id='run_this_first', dag=dag)
 
 passing = KubernetesPodOperator(
-    # namespace='airflow',
-    image="python:3.8",
+    namespace='airflow',
+    image="python:3.6",
     cmds=["python","-c"],
     arguments=["print('hello world')"],
     labels={"app": "airflow"},

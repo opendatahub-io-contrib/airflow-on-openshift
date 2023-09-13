@@ -31,9 +31,9 @@ dags:
   gitSync:
     uid: null
     enabled: true
-    repo: https://github.com/JeetRH/airflow-on-openshift.git
-    branch: main
-    subPath: dags
+    # repo: https://github.com/opendatahub-io-contrib/airflow-on-openshift.git
+    # branch: main
+    # subPath: dags
 
 logs:
   persistence:
